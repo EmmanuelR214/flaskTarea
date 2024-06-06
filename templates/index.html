@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Canciones</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            margin-top: 20px;
+            text-align: center;
+        }
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+        button[type="submit"] {
+            padding: 8px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        li a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        li a:hover {
+            background-color: #e9ecef;
+        }
+        form.inline {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Canciones de YouTube</h1>
+    
+    <!-- Formulario de búsqueda -->
+    <form action="{{ url_for('search') }}" method="post">
+        <input type="text" name="query" placeholder="Buscar canciones" required>
+        <button type="submit">Buscar</button>
+    </form>
+    
+    <!-- Biblioteca de canciones personalizada -->
+    <h2>Biblioteca de Canciones</h2>
+    <ul>
+        {% for title, url in library.items() %}
+        <li>
+            <a href="{{ url }}" target="_blank">{{ title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Lista de resultados de búsqueda -->
+    {% if songs %}
+    <h2>Resultados de Búsqueda</h2>
+    <ul>
+        {% for song in songs %}
+        <li>
+            {{ song['title'] }} - <a href="https://www.youtube.com{{ song['url_suffix'] }}" target="_blank">Reproducir</a>
+            <form action="{{ url_for('add_to_library') }}" method="post" class="inline">
+                <input type="hidden" name="song_url" value="https://www.youtube.com{{ song['url_suffix'] }}">
+                <input type="hidden" name="song_title" value="{{ song['title'] }}">
+                <button type="submit">Agregar a Biblioteca</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
+    <script>
+        function playSong(url) {
+            document.getElementById('player').src = url.replace("watch?v=", "embed/");
+        }
+    </script>
+    <footer>
+        <p style=" width: 100%; height: auto; display: flex; justify-content: center;" >&copy; 2024 Irving Emmanuel Hernandez Reyes. 9 "B" Todos los derechos reservados JAJAlol.</p>
+    </footer>
+</body>
+</html>
